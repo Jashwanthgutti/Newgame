@@ -1,0 +1,146 @@
+#include <stdio.h>
+#include <stdbool.h>
+#include<stdio_ext.h>
+
+#define SIZE 3 //size of the board
+char currentPlayer;
+int row,col;
+
+char Board[SIZE][SIZE];  //The Game Board
+
+//Funtion to initialize the board with empty spaces
+void initializeBoard() 
+{
+    for (int i = 0; i < SIZE; i++) 
+    {
+        for (int j = 0; j < SIZE; j++) 
+        {
+            Board[i][j] = ' ';
+        }
+    }
+}
+
+//Function to print the Game board
+void printBoard() 
+{
+    
+    printf("current state of the board:\n");
+    for (int i = 0; i < SIZE; i++) 
+    {
+        printf(" %c | %c | %c ", Board[i][0], Board[i][1], Board[i][2]);
+            printf("\n---|---|---\n");
+    }
+    printf("\n");
+}
+
+// Funtion to handle the player's move
+void playerMove(char currentplayer)
+{
+        char r,c;
+        printf("Enter row number (range(0-2)): ");
+        __fpurge(stdin);
+        scanf("%c",&r);
+        __fpurge(stdin);
+        printf("Enter column number (range(0-2)): ");
+        scanf("%c",&c);
+        row=r-'0'; //converting character into integer and storing it in row.
+        col=c-'0'; //converting characterinto integer and storing it in column.
+        if((row>=0 && row<SIZE) && (col>=0 && col<SIZE) && (Board[row][col]==' ')) 
+        {
+             Board[row][col] = currentplayer;
+        }
+        else
+        {
+            printf("invalid move/input...try again....!\n");
+            playerMove(currentPlayer);
+        }
+}
+
+// Function to check if a player has won the game
+bool checkWin(char currentplayer)
+{
+    // Check rows and columns
+    for (int i = 0; i < SIZE; i++)
+    {
+        if ((Board[i][0] == currentplayer && Board[i][1] == currentplayer && Board[i][2] == currentplayer) ||
+            (Board[0][i] == currentplayer && Board[1][i] == currentplayer && Board[2][i] == currentplayer))
+            {
+            return true;
+        }
+    }
+
+    // Check diagonals
+    if ((Board[0][0] == currentplayer && Board[1][1] == currentplayer && Board[2][2] == currentplayer) ||
+        (Board[0][2] == currentplayer && Board[1][1] == currentplayer && Board[2][0] == currentplayer))
+        {
+        return true;
+       }
+
+    return false;
+}
+
+// Function to check if the board is full
+bool checkDraw() 
+{
+    for (int i = 0; i < SIZE; i++) 
+    {
+        for (int j = 0; j < SIZE; j++) 
+        {
+            if (Board[i][j] == ' ')
+            {
+                return false;
+            }
+        }
+    }
+    return true;
+}
+void switchPlayer()
+{
+    
+     currentPlayer = (currentPlayer == 'x') ? 'o' : 'x';
+}
+
+// Main Function to play the game
+int main() 
+{
+    // Funcion call for initializing the board
+    initializeBoard();
+     //Function call for printing the board status
+    printBoard();
+    bin:
+    printf("Enter player's turn ( x or o ) for 1st time. from 2nd time onwards, it will automatically switch's the player  :");
+    __fpurge(stdin);
+  
+   scanf("%c",&currentPlayer);
+    if(currentPlayer== 'x' || currentPlayer=='o')
+    {
+    while (1)
+    {
+        //Function call for printing the board status
+        printBoard();
+     
+        printf("Player %c's turn: \n", currentPlayer);
+        playerMove(currentPlayer);
+     
+       //Function call for checking the won status+
+        if (checkWin(currentPlayer)) 
+        {
+            printBoard();
+            printf("Player %c wins!\n", currentPlayer);
+            return 0;
+        }
+        //Function call to check if board is full or not
+        if (checkDraw()) 
+        {
+            printBoard();
+            printf("It's a draw!\n");
+            return 0;
+        } //Function call for switching player's 
+        switchPlayer();
+    }
+    }
+    else
+    printf("invalid input...\n");
+    goto bin;
+    return 0;
+}
